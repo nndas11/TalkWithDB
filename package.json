@@ -1,0 +1,50 @@
+{
+  "name": "talkwithdb",
+  "version": "0.1.0",
+  "private": true,
+  "description": "TalkWithDB - Convert natural language to database queries using AI. Supports MySQL, PostgreSQL, and MongoDB with live database connections.",
+  "author": "Nihad <https://github.com/nndas>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ars-it/talkwithdb"
+  },
+  "homepage": "https://github.com/ars-it/talkwithdb#readme",
+  "keywords": [
+    "database",
+    "query",
+    "ai",
+    "openai",
+    "mysql",
+    "postgresql",
+    "mongodb",
+    "natural-language",
+    "sql"
+  ],
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "next": "14.0.4",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "openai": "^4.20.1",
+    "lucide-react": "^0.294.0",
+    "tailwindcss": "^3.3.6",
+    "autoprefixer": "^10.4.16",
+    "postcss": "^8.4.32",
+    "mysql2": "^3.9.7",
+    "pg": "^8.11.3",
+    "mongodb": "^6.7.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.5",
+    "@types/react": "^18.2.45",
+    "@types/react-dom": "^18.2.18",
+    "typescript": "^5.3.3",
+    "eslint": "^8.56.0",
+    "eslint-config-next": "14.0.4"
+  }
+} 
