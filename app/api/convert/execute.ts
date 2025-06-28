@@ -57,7 +57,9 @@ export async function POST(request: NextRequest) {
       const client = new PgClient(config)
       await client.connect()
       try {
-        const res = await client.query({ text: query, statement_timeout: 10000 })
+        // Set statement timeout on the client
+        await client.query('SET statement_timeout = 10000')
+        const res = await client.query(query)
         result = res.rows
       } finally {
         await client.end()

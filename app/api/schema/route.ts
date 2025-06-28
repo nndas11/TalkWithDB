@@ -13,7 +13,7 @@ export async function POST(request: NextRequest) {
     }
 
     const entry = CONNECTIONS[connectionId]
-    let schema = {}
+    let schema: { [key: string]: any } = {}
 
     if (entry.type === 'MySQL') {
       // Get all tables
@@ -34,7 +34,7 @@ export async function POST(request: NextRequest) {
           ORDER BY ORDINAL_POSITION
         `, [tableName])
         
-        schema[tableName] = columns.map(col => ({
+        schema[tableName] = columns.map((col: any) => ({
           name: col.COLUMN_NAME,
           type: col.DATA_TYPE,
           nullable: col.IS_NULLABLE === 'YES',
@@ -60,7 +60,7 @@ export async function POST(request: NextRequest) {
           ORDER BY ordinal_position
         `, [tableName])
         
-        schema[tableName] = columnsRes.rows.map(col => ({
+        schema[tableName] = columnsRes.rows.map((col: any) => ({
           name: col.column_name,
           type: col.data_type,
           nullable: col.is_nullable === 'YES',
@@ -81,7 +81,7 @@ export async function POST(request: NextRequest) {
         const sample = await coll.findOne({})
         if (sample) {
           // Extract field names and types from sample document
-          const fields = {}
+          const fields: { [key: string]: any } = {}
           for (const [key, value] of Object.entries(sample)) {
             fields[key] = {
               name: key,

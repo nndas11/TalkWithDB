@@ -15,7 +15,9 @@ export async function POST(request: NextRequest) {
     if (entry.type === 'MySQL') {
       [result] = await entry.conn.query({ sql: query, timeout: 10000 })
     } else if (entry.type === 'PostgreSQL') {
-      const res = await entry.client.query({ text: query, statement_timeout: 10000 })
+      // Set statement timeout on the client
+      await entry.client.query('SET statement_timeout = 10000')
+      const res = await entry.client.query(query)
       result = res.rows
     } else if (entry.type === 'MongoDB') {
       let parsed
