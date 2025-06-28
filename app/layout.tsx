@@ -6,10 +6,10 @@ const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
   title: 'TalkWithDB | AI Database Query Converter',
-  description: 'TalkWithDB - Convert natural language to database queries using AI. Supports MySQL, PostgreSQL, and MongoDB with live database connections. Created by Aravind S.',
-  authors: [{ name: 'Aravind S', url: 'https://github.com/ars-it' }],
+  description: 'TalkWithDB - Convert natural language to database queries using AI. Supports MySQL, PostgreSQL, and MongoDB with live database connections. Created by Nihad.',
+  authors: [{ name: 'Nihad ', url: 'https://github.com/nndas' }],
   keywords: ['database', 'query', 'ai', 'openai', 'mysql', 'postgresql', 'mongodb', 'natural-language', 'sql'],
-  creator: 'Aravind S',
+  creator: 'Nihad',
 }
 
 export default function RootLayout({

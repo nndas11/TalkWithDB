@@ -196,70 +196,82 @@ export default function Home() {
   }, [database, showModal, connectToDb, connected])
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
-      <div className="container mx-auto px-4 py-8">
-        <div className="max-w-4xl mx-auto">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+      <div className="container mx-auto px-4 py-12">
+        <div className="max-w-5xl mx-auto">
           {/* Header */}
-          <div className="text-center mb-8">
-            <h1 className="text-4xl font-bold text-gray-900 mb-2">
+          <div className="text-center mb-12">
+            <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl mb-6">
+              <Database className="h-8 w-8 text-white" />
+            </div>
+            <h1 className="text-5xl font-bold bg-gradient-to-r from-white to-blue-200 bg-clip-text text-transparent mb-4">
               TalkWithDB
             </h1>
-            <p className="text-lg text-gray-600">
-              Convert natural language queries to database-specific syntax using AI
+            <p className="text-xl text-gray-300 max-w-2xl mx-auto leading-relaxed">
+              Transform your natural language into powerful database queries with AI precision
             </p>
           </div>
 
-          {/* Toggle Bar */}
-          <div className="flex items-center justify-center mb-8">
-            <span className="mr-4 text-gray-700 font-medium">Connect to a database?</span>
-            <button
-              className={classNames(
-                'relative inline-flex h-8 w-16 border-2 border-blue-500 rounded-full transition-colors duration-200 focus:outline-none',
-                connectToDb ? 'bg-blue-600' : 'bg-gray-200'
+          {/* Connection Status Card */}
+          <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 mb-8 border border-white/20">
+            <div className="flex items-center justify-center space-x-6">
+              <div className="flex items-center space-x-3">
+                <span className="text-gray-300 font-medium">Database Connection</span>
+                <div className="relative">
+                  <button
+                    className={classNames(
+                      'relative inline-flex h-10 w-20 border-2 rounded-full transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-blue-500/20',
+                      connectToDb ? 'border-blue-400 bg-blue-500' : 'border-gray-500 bg-gray-600'
+                    )}
+                    onClick={() => {
+                      setConnectToDb((v) => !v)
+                      if (!connectToDb) {
+                        setDbCreds(prev => ({ ...prev, type: database }))
+                        setShowModal(true)
+                      }
+                      if (connectToDb) {
+                        setConnected(false)
+                        setConnectionId(null)
+                      }
+                    }}
+                    type="button"
+                  >
+                    <span
+                      className={classNames(
+                        'inline-block h-9 w-9 rounded-full bg-white shadow-lg transform transition-all duration-300',
+                        connectToDb ? 'translate-x-10' : 'translate-x-1'
+                      )}
+                    />
+                  </button>
+                </div>
+              </div>
+              
+              {connected && (
+                <div className="flex items-center space-x-3">
+                  <div className="flex items-center space-x-2 px-4 py-2 bg-green-500/20 border border-green-400/30 rounded-full">
+                    <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                    <span className="text-green-300 font-medium text-sm">Connected</span>
+                  </div>
+                  <button
+                    className="px-4 py-2 bg-red-500/20 hover:bg-red-500/30 border border-red-400/30 hover:border-red-400/50 text-red-300 rounded-full text-sm font-medium transition-all duration-200"
+                    onClick={handleDisconnect}
+                    type="button"
+                  >
+                    Disconnect
+                  </button>
+                </div>
               )}
-              onClick={() => {
-                setConnectToDb((v) => !v)
-                if (!connectToDb) {
-                  setDbCreds(prev => ({ ...prev, type: database }))
-                  setShowModal(true)
-                }
-                if (connectToDb) {
-                  setConnected(false)
-                  setConnectionId(null)
-                }
-              }}
-              type="button"
-            >
-              <span
-                className={classNames(
-                  'inline-block h-7 w-7 rounded-full bg-white shadow transform transition-transform duration-200',
-                  connectToDb ? 'translate-x-8' : 'translate-x-1'
-                )}
-              />
-            </button>
-            {connected && (
-              <span className="ml-4 flex items-center text-green-600 font-medium">
-                <Check className="h-5 w-5 mr-1" /> Connected
-                <button
-                  className="ml-4 px-3 py-1 bg-red-100 text-red-700 rounded hover:bg-red-200 text-sm"
-                  onClick={handleDisconnect}
-                  type="button"
-                >
-                  End Connection
-                </button>
-              </span>
-            )}
+            </div>
           </div>
 
           {/* Modal for DB Credentials */}
           {showModal && connectToDb && !connected && (
-            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
-              <div className="bg-white rounded-xl shadow-lg p-8 w-full max-w-md relative">
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+              <div className="bg-gray-900/95 backdrop-blur-xl rounded-2xl shadow-2xl p-8 w-full max-w-md relative border border-white/10">
                 <button
-                  className="absolute top-3 right-3 text-gray-400 hover:text-gray-600"
+                  className="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors"
                   onClick={() => {
                     setShowModal(false)
-                    // Reset toggle to off if not connected
                     if (!connected) {
                       setConnectToDb(false)
                     }
@@ -268,80 +280,84 @@ export default function Home() {
                 >
                   <XCircle className="h-6 w-6" />
                 </button>
-                <h2 className="text-xl font-semibold mb-4 text-gray-900">Database Credentials</h2>
-                <form onSubmit={handleConnect} className="space-y-4">
+                <h2 className="text-2xl font-bold text-white mb-6">Database Connection</h2>
+                <form onSubmit={handleConnect} className="space-y-5">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Database Type</label>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">Database Type</label>
                     <select
                       value={dbCreds.type}
                       onChange={e => setDbCreds({ ...dbCreds, type: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900"
+                      className="w-full px-4 py-3 bg-gray-800/50 border border-gray-600 rounded-xl text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                     >
                       <option value="MySQL">MySQL</option>
                       <option value="PostgreSQL">PostgreSQL</option>
                       <option value="MongoDB">MongoDB</option>
                     </select>
                   </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Host</label>
-                    <input
-                      type="text"
-                      value={dbCreds.host}
-                      onChange={e => setDbCreds({ ...dbCreds, host: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900"
-                      required
-                    />
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-300 mb-2">Host</label>
+                      <input
+                        type="text"
+                        value={dbCreds.host}
+                        onChange={e => setDbCreds({ ...dbCreds, host: e.target.value })}
+                        className="w-full px-4 py-3 bg-gray-800/50 border border-gray-600 rounded-xl text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-300 mb-2">Port</label>
+                      <input
+                        type="number"
+                        value={dbCreds.port}
+                        onChange={e => setDbCreds({ ...dbCreds, port: e.target.value })}
+                        className="w-full px-4 py-3 bg-gray-800/50 border border-gray-600 rounded-xl text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                        required
+                      />
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-300 mb-2">Username</label>
+                      <input
+                        type="text"
+                        value={dbCreds.user}
+                        onChange={e => setDbCreds({ ...dbCreds, user: e.target.value })}
+                        className="w-full px-4 py-3 bg-gray-800/50 border border-gray-600 rounded-xl text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-300 mb-2">Password</label>
+                      <input
+                        type="password"
+                        value={dbCreds.password}
+                        onChange={e => setDbCreds({ ...dbCreds, password: e.target.value })}
+                        className="w-full px-4 py-3 bg-gray-800/50 border border-gray-600 rounded-xl text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                      />
+                    </div>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">User</label>
-                    <input
-                      type="text"
-                      value={dbCreds.user}
-                      onChange={e => setDbCreds({ ...dbCreds, user: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
-                    <input
-                      type="password"
-                      value={dbCreds.password}
-                      onChange={e => setDbCreds({ ...dbCreds, password: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Database Name</label>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">Database Name</label>
                     <input
                       type="text"
                       value={dbCreds.database}
                       onChange={e => setDbCreds({ ...dbCreds, database: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900"
-                      required
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Port</label>
-                    <input
-                      type="number"
-                      value={dbCreds.port}
-                      onChange={e => setDbCreds({ ...dbCreds, port: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900"
+                      className="w-full px-4 py-3 bg-gray-800/50 border border-gray-600 rounded-xl text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                       required
                     />
                   </div>
                   {connectError && (
-                    <div className="p-2 bg-red-50 border border-red-200 rounded text-red-700 text-sm">
+                    <div className="p-4 bg-red-500/20 border border-red-400/30 rounded-xl text-red-300 text-sm">
                       {connectError}
                     </div>
                   )}
                   <button
                     type="submit"
-                    className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg flex items-center justify-center"
+                    className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold py-3 px-6 rounded-xl transition-all duration-200 flex items-center justify-center space-x-2 shadow-lg hover:shadow-xl"
                     disabled={connecting}
                   >
-                    {connecting ? <Loader2 className="animate-spin h-5 w-5 mr-2" /> : null}
-                    {connecting ? 'Connecting...' : 'Connect'}
+                    {connecting ? <Loader2 className="animate-spin h-5 w-5" /> : null}
+                    <span>{connecting ? 'Connecting...' : 'Connect to Database'}</span>
                   </button>
                 </form>
               </div>
@@ -349,25 +365,24 @@ export default function Home() {
           )}
 
           {/* Main Form */}
-          <div className="bg-white rounded-2xl shadow-xl p-8 mb-8">
+          <div className="bg-white/10 backdrop-blur-lg rounded-2xl border border-white/20 p-8 mb-8">
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Database Selection */}
               <div>
-                <label htmlFor="database" className="block text-sm font-medium text-gray-700 mb-2">
-                  Select Database
+                <label htmlFor="database" className="block text-sm font-medium text-gray-300 mb-3">
+                  Select Database Type
                 </label>
                 <div className="relative">
-                  <Database className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+                  <Database className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
                   <select
                     id="database"
                     value={database}
                     onChange={(e) => {
                       setDatabase(e.target.value)
-                      // Clear generated query when database type changes
                       setGeneratedQuery('')
                       setResults(null)
                     }}
-                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white text-gray-900 placeholder-gray-400"
+                    className="w-full pl-12 pr-4 py-4 bg-gray-800/50 border border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent text-white placeholder-gray-400 transition-all"
                   >
                     {databases.map((db) => (
                       <option key={db.value} value={db.value}>
@@ -378,20 +393,20 @@ export default function Home() {
                 </div>
                 {/* Schema indicator */}
                 {connectToDb && connected && (
-                  <div className="mt-2 flex items-center text-sm">
+                  <div className="mt-3 flex items-center text-sm">
                     {schemaLoading ? (
-                      <span className="text-blue-600 flex items-center">
-                        <Loader2 className="h-4 w-4 mr-1 animate-spin" />
+                      <span className="text-blue-400 flex items-center">
+                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
                         Loading database schema...
                       </span>
                     ) : schemaLoaded ? (
-                      <span className="text-green-600 flex items-center">
-                        <Check className="h-4 w-4 mr-1" />
+                      <span className="text-green-400 flex items-center">
+                        <Check className="h-4 w-4 mr-2" />
                         Using database schema for accurate queries
                       </span>
                     ) : (
-                      <span className="text-gray-500 flex items-center">
-                        <Check className="h-4 w-4 mr-1" />
+                      <span className="text-gray-400 flex items-center">
+                        <Check className="h-4 w-4 mr-2" />
                         Connected (schema will be loaded when you submit a query)
                       </span>
                     )}
@@ -401,7 +416,7 @@ export default function Home() {
 
               {/* Query Input */}
               <div>
-                <label htmlFor="query" className="block text-sm font-medium text-gray-700 mb-2">
+                <label htmlFor="query" className="block text-sm font-medium text-gray-300 mb-3">
                   Natural Language Query
                 </label>
                 <textarea
@@ -409,7 +424,6 @@ export default function Home() {
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                   onKeyDown={(e) => {
-                    // Submit form on Enter, but allow Shift+Enter for new lines
                     if (e.key === 'Enter' && !e.shiftKey) {
                       e.preventDefault()
                       const form = e.currentTarget.closest('form')
@@ -419,7 +433,7 @@ export default function Home() {
                     }
                   }}
                   placeholder="e.g., Find all users who signed up in the last month and have made at least one purchase"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none bg-white text-gray-900 placeholder-gray-400"
+                  className="w-full px-4 py-4 bg-gray-800/50 border border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none text-white placeholder-gray-400 transition-all"
                   rows={4}
                 />
               </div>
@@ -428,17 +442,17 @@ export default function Home() {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white font-medium py-3 px-6 rounded-lg transition-colors duration-200 flex items-center justify-center space-x-2"
+                className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 disabled:from-gray-600 disabled:to-gray-700 text-white font-semibold py-4 px-8 rounded-xl transition-all duration-200 flex items-center justify-center space-x-3 shadow-lg hover:shadow-xl disabled:shadow-none"
               >
                 {isLoading ? (
                   <>
                     <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                    <span>Converting...</span>
+                    <span>Converting Query...</span>
                   </>
                 ) : (
                   <>
                     <Send className="h-5 w-5" />
-                    <span>Convert Query</span>
+                    <span>Convert to {database} Query</span>
                   </>
                 )}
               </button>
@@ -446,74 +460,75 @@ export default function Home() {
 
             {/* Error Display */}
             {error && (
-              <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg">
-                <p className="text-red-700">{error}</p>
+              <div className="mt-6 p-4 bg-red-500/20 border border-red-400/30 rounded-xl">
+                <p className="text-red-300">{error}</p>
               </div>
             )}
           </div>
 
           {/* Generated Query Output */}
           {generatedQuery && (
-            <div className="bg-white rounded-2xl shadow-xl p-8 mb-8">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-semibold text-gray-900">
+            <div className="bg-white/10 backdrop-blur-lg rounded-2xl border border-white/20 p-8 mb-8">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-2xl font-bold text-white">
                   Generated {database} Query
                 </h2>
                 <button
                   onClick={copyToClipboard}
-                  className="flex items-center space-x-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors duration-200"
+                  className="flex items-center space-x-2 px-4 py-2 bg-gray-800/50 hover:bg-gray-700/50 border border-gray-600 hover:border-gray-500 rounded-xl transition-all duration-200"
                 >
                   {copied ? (
                     <>
-                      <Check className="h-4 w-4 text-green-600" />
-                      <span className="text-green-600">Copied!</span>
+                      <Check className="h-4 w-4 text-green-400" />
+                      <span className="text-green-400">Copied!</span>
                     </>
                   ) : (
                     <>
-                      <Copy className="h-4 w-4 text-gray-600" />
-                      <span className="text-gray-600">Copy</span>
+                      <Copy className="h-4 w-4 text-gray-300" />
+                      <span className="text-gray-300">Copy Query</span>
                     </>
                   )}
                 </button>
               </div>
-              <div className="bg-gray-50 rounded-lg p-4 mb-4">
-                <pre className="text-sm text-gray-800 whitespace-pre-wrap font-mono">
+              <div className="bg-gray-900/50 rounded-xl p-6 mb-6 border border-gray-700">
+                <pre className="text-sm text-gray-200 whitespace-pre-wrap font-mono leading-relaxed">
                   {generatedQuery}
                 </pre>
                 {schemaLoaded && (
-                  <div className="mt-3 pt-3 border-t border-gray-200">
-                    <p className="text-xs text-green-600 flex items-center">
-                      <Check className="h-3 w-3 mr-1" />
+                  <div className="mt-4 pt-4 border-t border-gray-700">
+                    <p className="text-xs text-green-400 flex items-center">
+                      <Check className="h-3 w-3 mr-2" />
                       Query generated using actual database schema for maximum accuracy
                     </p>
                   </div>
                 )}
               </div>
+              
               {/* Results Section */}
               {results !== null && connectToDb && connected && (
                 <div>
-                  <div className="flex items-center mb-2">
-                    <Table className="h-5 w-5 mr-2 text-blue-600" />
-                    <span className="font-medium text-gray-800">Results</span>
+                  <div className="flex items-center mb-4">
+                    <Table className="h-6 w-6 mr-3 text-blue-400" />
+                    <span className="font-semibold text-white text-lg">Query Results</span>
                   </div>
                   
                   {Array.isArray(results) && results.length > 0 ? (
-                    <div className="overflow-x-auto">
-                      <table className="min-w-full border border-gray-200 rounded-lg">
+                    <div className="overflow-x-auto rounded-xl border border-gray-700">
+                      <table className="min-w-full">
                         <thead>
-                          <tr>
+                          <tr className="bg-gray-800/50">
                             {Object.keys(results[0]).map((col) => (
-                              <th key={col} className="px-4 py-2 bg-blue-50 text-blue-900 font-semibold border-b border-gray-200">
+                              <th key={col} className="px-6 py-4 text-left text-sm font-semibold text-gray-300 border-b border-gray-700">
                                 {col}
                               </th>
                             ))}
                           </tr>
                         </thead>
-                        <tbody>
+                        <tbody className="bg-gray-900/30">
                           {results.map((row, i) => (
-                            <tr key={i} className="even:bg-gray-50">
+                            <tr key={i} className="border-b border-gray-800 hover:bg-gray-800/30 transition-colors">
                               {Object.values(row).map((val, j) => (
-                                <td key={j} className="px-4 py-2 border-b border-gray-100 text-gray-800">
+                                <td key={j} className="px-6 py-4 text-sm text-gray-200">
                                   {typeof val === 'object' ? JSON.stringify(val) : String(val)}
                                 </td>
                               ))}
@@ -523,13 +538,13 @@ export default function Home() {
                       </table>
                     </div>
                   ) : (
-                    <div className="p-6 bg-gray-50 rounded-lg border border-gray-200">
+                    <div className="p-8 bg-gray-900/30 rounded-xl border border-gray-700">
                       <div className="text-center">
-                        <div className="text-gray-400 mb-2">
-                          <Table className="h-8 w-8 mx-auto" />
+                        <div className="text-gray-500 mb-4">
+                          <Table className="h-12 w-12 mx-auto" />
                         </div>
-                        <p className="text-gray-600 font-medium">No results found</p>
-                        <p className="text-sm text-gray-500 mt-1">
+                        <p className="text-gray-300 font-medium text-lg mb-2">No results found</p>
+                        <p className="text-gray-400">
                           The query executed successfully but returned no matching records.
                         </p>
                       </div>
@@ -537,44 +552,36 @@ export default function Home() {
                   )}
                 </div>
               )}
-              
-              {/* Chart Placeholder */}
-              {results && Array.isArray(results) && results.length > 0 && (
-                <div className="mt-6">
-                  {/* Chart.js or Recharts visualization can go here */}
-                  <div className="text-gray-500 italic text-sm">[Chart visualization coming soon]</div>
-                </div>
-              )}
             </div>
           )}
 
           {/* Example Queries */}
-          <div className="mt-8 bg-white rounded-2xl shadow-xl p-8">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">
+          <div className="bg-white/10 backdrop-blur-lg rounded-2xl border border-white/20 p-8">
+            <h3 className="text-2xl font-bold text-white mb-6">
               Example Queries
             </h3>
-            <div className="grid md:grid-cols-2 gap-4">
-              <div className="p-4 bg-blue-50 rounded-lg">
-                <h4 className="font-medium text-blue-900 mb-2">Find Users</h4>
-                <p className="text-sm text-blue-700">
+            <div className="grid md:grid-cols-2 gap-6">
+              <div className="p-6 bg-blue-500/10 border border-blue-400/20 rounded-xl hover:bg-blue-500/20 transition-all">
+                <h4 className="font-semibold text-blue-300 mb-3">Find Users</h4>
+                <p className="text-sm text-blue-200 leading-relaxed">
                   "Show me all users who registered in the last 30 days"
                 </p>
               </div>
-              <div className="p-4 bg-green-50 rounded-lg">
-                <h4 className="font-medium text-green-900 mb-2">Aggregate Data</h4>
-                <p className="text-sm text-green-700">
+              <div className="p-6 bg-green-500/10 border border-green-400/20 rounded-xl hover:bg-green-500/20 transition-all">
+                <h4 className="font-semibold text-green-300 mb-3">Aggregate Data</h4>
+                <p className="text-sm text-green-200 leading-relaxed">
                   "Calculate the total sales for each product category"
                 </p>
               </div>
-              <div className="p-4 bg-purple-50 rounded-lg">
-                <h4 className="font-medium text-purple-900 mb-2">Complex Filter</h4>
-                <p className="text-sm text-purple-700">
+              <div className="p-6 bg-purple-500/10 border border-purple-400/20 rounded-xl hover:bg-purple-500/20 transition-all">
+                <h4 className="font-semibold text-purple-300 mb-3">Complex Filter</h4>
+                <p className="text-sm text-purple-200 leading-relaxed">
                   "Find orders with total amount greater than $100 and status is pending"
                 </p>
               </div>
-              <div className="p-4 bg-orange-50 rounded-lg">
-                <h4 className="font-medium text-orange-900 mb-2">Join Tables</h4>
-                <p className="text-sm text-orange-700">
+              <div className="p-6 bg-orange-500/10 border border-orange-400/20 rounded-xl hover:bg-orange-500/20 transition-all">
+                <h4 className="font-semibold text-orange-300 mb-3">Join Tables</h4>
+                <p className="text-sm text-orange-200 leading-relaxed">
                   "Get customer names and their order details from the last week"
                 </p>
               </div>
